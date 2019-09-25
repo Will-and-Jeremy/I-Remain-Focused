@@ -1,0 +1,50 @@
+//DECLARE YOUR VARIABLES THAT REPRESENT NUMERICAL VALUES
+int l_motor = 0;
+int r_motor = 3;
+int low_speed = 25;
+int mid_speed = 50;
+int jog_speed = 75;
+int run_speed = 100;
+int l_bump = 0;
+int r_bump = 9;
+//END OF VARIABLE LIST
+int main()
+{
+
+    while (1) {
+    	forward();
+        if (digital(l_bump)) {
+            backward();
+        	moveright();
+        }
+        if (digital(r_bump)) {
+            backward();
+        	moveleft();
+        }
+    }
+    	return 0;
+}
+
+void moveright () {
+    motor(l_motor, low_speed);
+    motor(r_motor, -low_speed);
+    msleep(2000);
+    ao();
+}
+void moveleft () {
+    motor(r_motor, low_speed);
+    motor(l_motor, -low_speed);
+    msleep(2000);
+    ao();
+}
+void forward () {
+    motor(l_motor, mid_speed);
+    motor(r_motor, mid_speed);
+}
+
+void backward () {
+	motor(r_motor, -low_speed);
+    motor(l_motor, -low_speed);
+    msleep(2000);
+    ao();
+}
