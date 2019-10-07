@@ -1,0 +1,74 @@
+//DECLARE YOUR VARIABLES THAT REPRESENT NUMERICAL VALUES
+int l_motor = 0;
+int r_motor = 3;
+int low_speed = 25;
+int mid_speed = 50;
+int jog_speed = 75;
+int run_speed = 100;
+int l_bump = 1;
+int r_bump = 9;
+int pause = 2000;
+int turnpause = 750;
+int counter = 0;
+//END OF VARIABLE LIST
+int main()
+{
+shut_down_in(310.0); // turns robot off in 5 mins and 10 secs
+    while (1) { // creates a while loop that continuously leaves the robot traveling forwards
+    forward();
+        if (digital(l_bump)) { // if the left bumper is hit, robot backs up and turns right, and adds to the random counter
+            backward();
+        moveright();
+            counter = counter + 1;
+        }
+        if (digital(r_bump)) { // if the right bumper is hit, robot backs up and turns left, and adds to the random counter
+            backward();
+        moveleft();
+            counter = counter + 1;
+        }
+          if (counter == 5) { // after 5 bumps, the robot moves in an evasive maneuver to escape infinite loops
+           evasive();
+           counter = 0;
+        }
+    }
+    return 0;
+}
+
+void moveright () { // robot moves right 90 degrees
+    motor(l_motor, mid_speed);
+    motor(r_motor, -mid_speed);
+    msleep(turnpause);
+    ao();
+}
+
+void moveleft () { // robot moves left 90 degrees
+    motor(r_motor, mid_speed);
+    motor(l_motor, -mid_speed);
+    msleep(turnpause);
+    ao();
+}
+
+void forward () { // robot moves forward, without an all off function to keep it continuously moving
+    motor(l_motor, run_speed);
+    motor(r_motor, run_speed);
+}
+
+void backward () { // robot moves backwards
+    motor(r_motor, -mid_speed);
+    motor(l_motor, -mid_speed);
+    msleep(pause);
+    ao();
+}
+void evasive () { // robot moves backward and turns turns left 180 degrees
+motor(r_motor, -low_speed);
+    motor(l_motor, -low_speed);
+    msleep(pause);
+    msleep(pause);
+    motor(r_motor, low_speed);
+    motor(l_motor, -low_speed);
+    msleep(pause);
+    motor(r_motor, low_speed);
+    motor(l_motor, -low_speed);
+    msleep(pause);
+    ao();
+}
