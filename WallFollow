@@ -1,0 +1,60 @@
+//DECLARE YOUR VARIABLES THAT REPRESENT NUMERICAL VALUES
+
+int leftMotor = 0;
+int rightMotor = 3;
+int turnOff = 0;
+int lowSpeed = 25;
+int midSpeed = 50;
+int turnPause = 1500;
+int counter = 0;
+int turn = 2900;
+int frontSensor = 0;
+int wallSensor = 5;
+int tooClose = 2400;
+//int tooFar = 2300;
+//END OF VARIABLE LIST
+
+int main() {
+while (analog(frontSensor) <=turn ) {
+	//forward();
+	if(analog(wallSensor) < tooClose) {
+		slightRight();
+        printf("weave /n");
+	}
+	if(analog(wallSensor) > tooClose) {
+		slightLeft();
+        printf("swerve /n");
+	}
+	if(analog(frontSensor) > turn && counter == 0) {
+		corner();
+		counter = counter + 1;
+    	printf("turn");
+	}
+	if(analog(frontSensor) > turn && counter > 0) {
+		ao();
+        return 0;
+	}
+}
+}
+void forward () { // robot moves forward, without an all off function to keep it continuously moving
+    motor(rightMotor, lowSpeed);
+    motor(leftMotor, lowSpeed);
+}
+       
+void slightLeft () { // robot moves slight left
+    motor(rightMotor, midSpeed);
+    motor(leftMotor, lowSpeed);
+    
+}
+void slightRight () { // robot moves slight right
+    motor(leftMotor, midSpeed);
+    motor(rightMotor, lowSpeed);
+   
+}
+       
+void corner () { 
+    motor(rightMotor, midSpeed);
+    motor(leftMotor, -midSpeed);
+    msleep(turnPause);
+    ao();
+}
