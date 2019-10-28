@@ -1,0 +1,89 @@
+int leftMotor = 0;
+int rightMotor = 3;
+int lowSpeed = 10;
+int midSpeed = 150;
+int frontSensor = 0;
+int floorSensor = 5;
+int Line = 3800;
+int stop = 2800;
+int completionArm = 0;
+int wavePause = 500;
+int turnPause = 200;
+int back = 100;
+int forth = 2000;
+//END OF VARIABLE LIST
+
+
+int main() {
+	while (analog(floorSensor) < Line) {
+        forward();
+    }
+    ao();
+    while (analog(frontSensor) < stop) {
+        if(analog(floorSensor) > Line) {
+			slightLeft();
+		}
+        if (analog (floorSensor) < Line) {
+    		slightRight();
+    	}
+    }
+    ao();
+    allDone();
+msleep(15000);
+}
+
+void forward () { // robot moves forward, without an all off function to keep it continuously moving
+    motor(rightMotor, midSpeed);
+    motor(leftMotor, midSpeed);
+}
+       
+void slightLeft () { // robot moves slight left
+    motor(rightMotor, midSpeed);
+    motor(leftMotor, lowSpeed);
+    printf("weave");
+}
+void slightRight () { // robot moves slight right
+    motor(leftMotor, midSpeed);
+    motor(rightMotor, lowSpeed);
+    printf("bob and");
+}
+void allDone () {
+    enable_servos();
+	  set_servo_position (completionArm, back);
+    msleep(wavePause);
+    set_servo_position (completionArm, forth);
+    msleep(wavePause);
+    set_servo_position (completionArm, back);
+    msleep(wavePause);
+    set_servo_position (completionArm, forth);
+    msleep(wavePause);
+    set_servo_position (completionArm, back);
+    msleep(wavePause);
+    set_servo_position (completionArm, forth);
+    msleep(wavePause);
+    set_servo_position (completionArm, back);
+    msleep(wavePause);
+    set_servo_position (completionArm, forth);
+    msleep(wavePause);
+    set_servo_position (completionArm, back);
+    msleep(wavePause);
+    set_servo_position (completionArm, forth);
+    msleep(wavePause);
+    set_servo_position (completionArm, back);
+    msleep(wavePause);
+    set_servo_position (completionArm, forth);
+    msleep(wavePause);
+    set_servo_position (completionArm, back);
+    msleep(wavePause);
+    set_servo_position (completionArm, forth);
+    msleep(wavePause);
+    set_servo_position (completionArm, back);
+    msleep(wavePause);
+    set_servo_position (completionArm, forth);
+    msleep(wavePause);
+    set_servo_position (completionArm, back);
+    msleep(wavePause);
+    set_servo_position (completionArm, forth);
+    msleep(wavePause);
+    disable_servos();
+}
