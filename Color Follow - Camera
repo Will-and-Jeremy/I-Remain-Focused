@@ -1,0 +1,48 @@
+#include <kipr/botball.h>
+int l_motor = 0;
+int r_motor = 3;
+int move = 35;
+int moveQ = 45;
+int inFront = 10;
+int none = 0;
+int middle = 80;
+
+int main() {
+	camera_open();
+    while(1) {
+    camera_update();
+    	if( get_object_count(1) > none ) {
+    		printf("%d Red pom(s) detected \n", get_object_count(1));
+            printf("Red pom(s) detected at %d \n", get_object_center_x(1,0));
+    	}
+    	while (get_object_count(1) > none) {
+        	camera_update();
+    		if(get_object_center_x(1,0) < middle){
+        		turnRight();
+            	printf("bob \n");
+        	}
+        	if(get_object_center_x(1,0) > middle){
+        		turnLeft();
+            	printf("weave \n");
+        	}
+            if(get_object_center_y(1,0) < inFront) {
+                stop();
+            }
+    	}
+	}
+}
+
+
+void turnRight () {
+    motor(l_motor, moveQ);
+    motor(r_motor, -move);
+}
+void turnLeft () {
+    motor(r_motor, moveQ);
+    motor(l_motor, -move);
+}
+
+void stop () {
+	motor(r_motor, 0);
+    motor(l_motor, 0);
+}
