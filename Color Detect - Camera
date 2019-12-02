@@ -1,0 +1,30 @@
+#include <kipr/botball.h>
+//define functions
+
+int main () {
+    camera_open();
+    while(1){
+        camera_update();
+        if(get_object_count(0) > 0) {
+    		printf("%d Green pom(s) detected \n", get_object_count(0));
+            printf("Green pom(s) detected at %d \n", get_object_center_x(0,0));
+    	}
+     	if(get_object_count(1) > 0) {
+    		printf("%d Red pom(s) detected \n", get_object_count(1));
+            printf("Red pom(s) detected at %d \n", get_object_center_x(1,0));
+    	}
+     	if(get_object_count(2) > 0) {
+    		printf("%d Pink pom(s) detected \n", get_object_count(2));
+            printf("Pink pom(s) detected at %d \n", get_object_center_x(2,0));
+    	}
+        if (get_object_count(2) == 0 && get_object_count(1) == 0 && get_object_count(0) == 0) {
+      		printf("No green, red, or pink poms detected \n");
+        }
+	msleep(400);
+        
+    }
+}
+
+
+
+
