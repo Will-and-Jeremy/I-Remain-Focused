@@ -13,7 +13,7 @@ int main(){
 			printf("wall detected \n");
 			while(1) { // it'll turn
 				motor(leftMotor, speed);
-				motor(rightMotor, -10);
+				motor(rightMotor, -speed);
 				if(digital(leftBump)) { // until the left bumper hits the wall 
 					printf("Flat wall detected \n");
 					break;  // then stop
