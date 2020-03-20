@@ -1,0 +1,35 @@
+// Created on Thu March 19 2020
+int leftMotor = 0;
+int rightMotor = 2;
+int speed = 50;
+int leftBump = 8;
+int rightBump = 9;
+
+int main(){
+	while(1) {
+		motor(leftMotor, speed);
+		motor(rightMotor, speed); //travel
+		if(digital(rightBump)) { //until it hits the wall
+			printf("wall detected \n");
+			while(1) { // it'll turn
+				motor(leftMotor, speed);
+				motor(rightMotor, -10);
+				if(digital(leftBump)) { // until the left bumper hits the wall 
+					printf("Flat wall detected \n");
+					break;  // then stop
+				}
+			}
+			break; // the first break takes us out of the nested while loop and this takes us out of the initial one
+		}
+	}
+}
+void forward () {   		 // forward command
+    motor(leftMotor, speed);
+    motor(rightMotor, speed);
+}
+
+void turnLeft () { // right wheel stops to let left bumper hit the wall
+    motor(leftMotor, speed);
+	motor(rightMotor, 0);
+}
+// I don't know why but when I tried to use the voided functions I made, it gave me an error stating there were conflicting types for "forward" and "turnLeft". The functions I would've used are above and the body of each function is pasted to the spot I would've had them
