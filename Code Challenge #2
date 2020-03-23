@@ -1,0 +1,72 @@
+// Created on Mon March 23 2020
+int leftMotor = 0;
+int rightMotor = 2;
+int lowSpeed = 3;
+int midSpeed = 50;
+int speed = 16;
+int zoom = 60;
+int leftBump = 8;
+int rightBump = 9;
+int line = 3500;
+int leftLineSensor = 6;
+int leftRange = 1;
+int middleRange = 2;
+int rightRange = 3;
+
+void move () { // forward command
+    motor(leftMotor, speed);
+    motor(rightMotor, speed);
+}
+
+void turnRight () { 
+    motor(leftMotor, speed);
+	motor(rightMotor, -speed);
+}
+
+void turnLeft () { 
+    motor(rightMotor, speed);
+	motor(leftMotor, -speed);
+}
+
+void wideRight () { // the first msleep turn that points the robot in direction of the lower wall
+	motor(leftMotor, midSpeed);
+	motor(rightMotor, speed);
+}
+
+void straightener(){ // this is the code from code challenge one
+	while(1) {
+		move(); //travel
+		if(digital(rightBump)) { //until it hits the wall
+			printf("wall detected \n");
+			while(1) { // it'll turn
+				turnRight();
+				if(digital(leftBump)) { // until the left bumper hits the wall 
+					printf("Flat wall detected \n");
+					break;  // then stop
+				}
+			}
+			printf("Straightened"); // confirmed straight
+			break; // the first break takes us out of the nested while loop and this takes us out of the initial one
+		}
+	}
+}
+
+int main() {
+	wideRight(); // turns past the "straight" mark 
+	msleep(900);
+	while(1) {
+		move(); // and then moves at an angle towards the wall
+		if(digital(rightBump)){ // if it hits the wall on the way to the bottom wall then it'll right itself to not collide with the left wall
+			turnLeft();
+		}
+		if(analog(rightRange) < 150){ // as it approaches the lower wall it swaps into the code that aligns it with the wall for the msleep turn to work
+			straightener();
+			turnLeft(); // the turn to orient itself so it's facing SOMEWHERE inbetween the black line and the lower wall
+			msleep(2300);
+			break;
+		}
+		else{
+			move(); // if it's not close to the lower wall then it'll move forward until it gets close enough to initiate the above code
+		}
+	}
+}
