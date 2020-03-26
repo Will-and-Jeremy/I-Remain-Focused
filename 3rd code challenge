@@ -1,0 +1,117 @@
+// Created on Thu March 26 2020
+
+//VARIABLES
+	//speeds
+int lowSpeed = 3;
+int midSpeed = 80;
+int speed = 30;
+int zoom = 60;
+	//ports - motor
+int leftMotor = 0;
+int rightMotor = 2;
+	//ports - distance
+int rightRange = 2;
+int leftRange = 0;
+int middleRange = 1;
+	//ports - line
+int rightLineSensor = 6;
+int leftLineSensor = 5;
+	//ports - touch
+int leftBump = 8;
+int rightBump = 9;
+	//distances & lines
+int stop = 150;
+int Line = 30;
+
+// BASIC MOVEMENT FUNCTIONS
+
+void move () { // forward command
+    motor(leftMotor, speed);
+    motor(rightMotor, speed);
+}
+
+void turnRight () { 
+    motor(leftMotor, speed);
+	motor(rightMotor, -speed);
+}
+
+void turnLeft () { 
+    motor(rightMotor, speed);
+	motor(leftMotor, -speed);
+}
+
+// SPECIFIC MOVEMENTS
+
+void wideRight () { // the first msleep turn that points the robot in direction of the lower wall
+	motor(leftMotor, midSpeed);
+	motor(rightMotor, speed);
+}
+
+void slightLeft () { // robot moves slight left for line follow
+    motor(rightMotor, speed);
+    motor(leftMotor, lowSpeed);
+}
+void slightRight () { // robot moves slight right for line follow
+    motor(leftMotor, speed);
+    motor(rightMotor, lowSpeed);
+}
+
+//SPECIFIC FUNCTIONS
+
+void straightener(){ // this is the code from code challenge one
+	while(1) {
+		move(); //travel
+		if(digital(rightBump)) { //until it hits the wall
+			printf("wall detected \n");
+			while(1) { // it'll turn
+				turnRight();
+				if(digital(leftBump)) { // until the left bumper hits the wall 
+					printf("Flat wall detected \n");
+					break;  // then stop
+				}
+			}
+			printf("Straightened \n"); // confirmed straight
+			break; // the first break takes us out of the nested while loop and this takes us out of the initial one
+		}
+	}
+}
+
+void lineFollow(){
+	while (analog(middleRange) >  stop) { // runs the line follow code until it is close to the wall
+		if(analog(leftLineSensor) < Line) {
+			printf("off ");
+			slightLeft();
+		}
+		if (analog (leftLineSensor) > Line) {
+			printf("on ");
+			slightRight();
+		}
+	}
+}
+
+// RUNNING CODE BELOW
+
+int main() {
+	wideRight(); // turns past the "straight" mark 
+		msleep(700);
+	while(1) {
+		move(); // and then moves at an angle towards the wall
+		if(digital(rightBump)){ // if it hits the wall on the way to the bottom wall then it'll right itself to not collide with the left wall
+			turnLeft();
+				msleep(200);
+		}
+		if(analog(middleRange) < 200){ // as it approaches the lower wall it swaps into the code that aligns it with the wall for the msleep turn to work
+			straightener();
+			turnLeft(); // the turn to orient itself so it's facing SOMEWHERE inbetween the black line and the lower wall
+				msleep(1300);
+			while (analog(leftLineSensor) < Line) { // moves forward until the right line sensor is on the black line
+				move();
+			}
+			printf("On the Line \n");
+			lineFollow();
+			printf("I'm at the final point! Shutting down \n");
+			ao();
+			break;
+		}
+	}
+}
