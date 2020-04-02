@@ -1,0 +1,124 @@
+//VARIABLES
+	//speeds
+int lowSpeed = 0;
+int midSpeed = 80;
+int speed = 30;
+int zoom = 60;
+	//ports - motor
+int leftMotor = 0;
+int rightMotor = 2;
+	//ports - distance
+int rightRange = 2;
+int leftRange = 0;
+int middleRange = 1;
+	//ports - line
+int rightLineSensor = 6;
+int leftLineSensor = 5;
+	//ports - touch
+int leftBump = 8;
+int rightBump = 9;
+	//distances & lines
+int stop = 150;
+int Line = 30;
+	//counter
+int counter = 0;
+// BASIC MOVEMENT FUNCTIONS
+
+void move () { // forward command
+    motor(leftMotor, speed);
+    motor(rightMotor, speed);
+}
+
+void turnRight () { 
+    motor(leftMotor, speed);
+	motor(rightMotor, -speed);
+}
+
+void turnLeft () { 
+    motor(rightMotor, speed);
+	motor(leftMotor, -speed);
+}
+
+// SPECIFIC MOVEMENTS
+
+void wideRight () { // the first msleep turn that points the robot in direction of the lower wall
+	motor(leftMotor, midSpeed);
+	motor(rightMotor, speed);
+}
+
+void slightLeft () { // robot moves slight left for line follow
+    motor(rightMotor, speed);
+    motor(leftMotor, lowSpeed);
+}
+void slightRight () { // robot moves slight right for line follow
+    motor(leftMotor, speed);
+    motor(rightMotor, lowSpeed);
+}
+
+//SPECIFIC FUNCTIONS
+
+void straightener(){ // this is the code from code challenge one
+	while(1) {
+		move(); //travel
+		if(digital(rightBump)) { //until it hits the wall
+			printf("wall detected \n");
+			while(1) { // it'll turn
+				turnRight();
+				if(digital(leftBump)) { // until the left bumper hits the wall 
+					printf("Flat wall detected \n");
+					break;  // then stop
+				}
+			}
+			printf("Straightened \n"); // confirmed straight
+			break; // the first break takes us out of the nested while loop and this takes us out of the initial one
+		}
+	}
+}
+
+void lineFollowLeftSide(){ // line follow if statements for the left reflectance sensor - MUST BE INSIDE A WHILE LOOP
+	if(analog(leftLineSensor) < Line) {
+		printf("off ");
+		slightLeft();
+	}
+	if (analog (leftLineSensor) > Line) {
+		printf("on ");
+		slightRight();
+	}
+}
+
+
+void lineFollowRightSide(){ // line follow if statements for the right reflectance sensor - MUST BE INSIDE A WHILE LOOP
+	if(analog(rightLineSensor) < Line) {
+		printf("off ");
+		slightRight();
+	}
+	if (analog (rightLineSensor) > Line) {
+		printf("on ");
+		slightLeft();
+	}
+}
+
+
+// RUNNING CODE BELOW
+
+int main() {
+	while (counter < 13) { // with the speeds above, the right line sensor will hit anywhere from 12-16 black line readings before arriving at the end box
+		if (analog(rightRange) < 350) {  // if it's too close to the wall it'll move left
+			printf("Too close \n");
+			if(analog(rightLineSensor)) {  // anytime it passes over a black line it'll add to a counter
+				counter++;
+				printf("%d \n",counter);
+			}
+			slightLeft();
+		}
+		
+		if (analog(rightRange) > 350) { // if it's too far from the wall it'll move right
+			printf("Too far \n");
+			if(analog(rightLineSensor)) { // anytime it passes over a black line it'll add to a counter
+				counter++;
+				printf("%d \n",counter);
+			}
+			slightRight();
+		}
+	}
+}
