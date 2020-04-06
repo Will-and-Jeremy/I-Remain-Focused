@@ -1,0 +1,56 @@
+//VARIABLES
+	//speeds
+int lowSpeed = 0;
+int midSpeed = 80;
+int speed = 30;
+int zoom = 60;
+	//ports - motor
+int leftMotor = 0;
+int rightMotor = 2;
+	//ports - distance
+int rightRange = 2;
+int leftRange = 0;
+int middleRange = 1;
+	//ports - line
+int rightLineSensor = 6;
+int leftLineSensor = 5;
+	//ports - touch
+int leftBump = 8;
+int rightBump = 9;
+	//distances & lines
+int stop = 150;
+int Line = 30;
+	//counter
+int counter = 1;
+// BASIC MOVEMENT FUNCTIONS
+
+void move () { // forward command
+    motor(leftMotor, speed);
+    motor(rightMotor, speed);
+}
+
+void turnRight () { 
+    motor(leftMotor, speed);
+	motor(rightMotor, -speed);
+}
+
+void turnLeft () { 
+    motor(rightMotor, speed);
+	motor(leftMotor, -speed);
+}
+
+
+// RUNNING CODE BELOW
+int main () {
+	for(counter = 1; counter <= 6; counter++) { // makes it do the thing six times with one as the increment
+		if(analog(leftRange) <550) { // checks if it's about to run through a grey wall
+			printf("I'm going to walk through the wall during my %d second long step \n", counter); // states that it will accordingly
+		}
+		else {printf("I'm taking my %d second long walk \n", counter); 
+		}
+		move();
+		msleep(counter*1000); //makes the robot move for however long the counter is (in seconds)
+		ao();
+		msleep(1000); // pause to separate the walks 
+	}
+}
